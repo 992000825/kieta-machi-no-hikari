@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>消えた町のひかり・試作</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#070b16;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}
+#app{height:100%;overflow:hidden;position:relative;background:#070b16}
+.scene{position:absolute;inset:0;opacity:0;transition:opacity 1.2s;display:flex;align-items:center;justify-content:center;background:#070b16}
+.scene.on{opacity:1}
+.scene img{width:300%;height:300%;object-fit:cover;max-width:none;position:absolute;animation:drift 7s ease-in-out forwards}
+@keyframes drift{from{transform:scale(1.00)}to{transform:scale(1.07)}}
+.crop0 img{object-position:16.6% 16.6%}.crop1 img{object-position:50% 16.6%}.crop2 img{object-position:83.3% 16.6%}
+.crop3 img{object-position:16.6% 50%}.crop4 img{object-position:50% 50%}.crop5 img{object-position:83.3% 50%}
+.crop6 img{object-position:16.6% 83.3%}.crop7 img{object-position:50% 83.3%}.crop8 img{object-position:83.3% 83.3%}
+.caption{position:absolute;left:7%;right:7%;bottom:9%;font-family:serif;text-align:center;font-size:clamp(18px,5vw,28px);text-shadow:0 2px 10px #000;line-height:1.6}
+#skip{position:absolute;z-index:9;right:16px;top:max(16px,env(safe-area-inset-top));border:1px solid #ffffff66;background:#0007;color:white;border-radius:18px;padding:8px 14px}
+#title{display:none;position:absolute;inset:0;z-index:12;background:linear-gradient(#071426aa,#071426ee),url("opening_storyboard.png") center/cover;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px}
+#title.show{display:flex}.logo{font-family:serif;font-size:clamp(38px,10vw,68px);text-shadow:0 3px 20px #d99b55;margin-bottom:6px}.sub{opacity:.8;margin-bottom:42px}
+button.main{font-size:20px;padding:14px 34px;margin:8px;border-radius:30px;border:1px solid #f4d59b;background:#20170ee6;color:#fff}
+#names{display:none;position:absolute;inset:0;z-index:15;background:#0c1323;align-items:center;justify-content:center;padding:25px}
+#names.show{display:flex}.card{width:min(430px,100%);background:#151d2e;border:1px solid #ffffff22;border-radius:22px;padding:24px}
+input{width:100%;font-size:20px;padding:13px;margin:7px 0 17px;border-radius:12px;border:0}
+#chapter{display:none;position:absolute;inset:0;z-index:20;background:radial-gradient(circle at 50% 20%,#253452,#070b16 70%);align-items:center;justify-content:center;text-align:center;padding:28px}
+#chapter.show{display:flex}.chapterbox{max-width:520px}.chapterbox h2{font-family:serif;font-size:32px}.dialog{margin-top:28px;background:#0008;border:1px solid #ffffff22;border-radius:16px;padding:18px;line-height:1.8}
+</style></head>
+<body><div id="app">
+<button id="skip">SKIP</button>
+<div id="opening"></div>
+<div id="title"><div class="logo">消えた町のひかり</div><div class="sub">The Lost Lights of the Town</div><button class="main" id="start">はじめから</button></div>
+<div id="names"><div class="card"><h2>兄弟の名前を決めよう</h2><label>兄</label><input id="bro" value="ハル"><label>弟</label><input id="little" value="ソラ"><button class="main" id="go">この名前ではじめる</button></div></div>
+<div id="chapter"><div class="chapterbox"><div>第一章</div><h2>霧の向こうの町</h2><div class="dialog" id="dialog"></div><button class="main" id="next">つづける</button></div></div>
+</div>
+<script>
+const caps=["どこまでも続く、夜の道。","兄と弟は、ある町を目指していた。","「兄ちゃん……！ あれ、見て！」","霧の向こうに、見えたのは——","地図にはない、ふしぎな町。","止まっていた時間が、いま動き出す——","そして二人は、町の奥で不思議なものを見つける。","消えた町のひかり","忘れられない出会いが、ここにある——"];
+const opening=document.getElementById("opening");
+caps.forEach((c,i)=>{let d=document.createElement("div");d.className="scene crop"+i;d.innerHTML='<img src="opening_storyboard.png"><div class="caption">'+c+'</div>';opening.appendChild(d)});
+let idx=0,timer; const scenes=[...document.querySelectorAll(".scene")];
+function show(i){scenes.forEach(x=>x.classList.remove("on")); if(i<scenes.length){scenes[i].classList.add("on");timer=setTimeout(()=>show(++idx),3000)}else end()}
+function end(){clearTimeout(timer);opening.style.display="none";document.getElementById("skip").style.display="none";document.getElementById("title").classList.add("show")}
+document.getElementById("skip").onclick=end;
+document.getElementById("start").onclick=()=>{document.getElementById("title").classList.remove("show");document.getElementById("names").classList.add("show")};
+document.getElementById("go").onclick=()=>{let b=document.getElementById("bro").value||"兄";let l=document.getElementById("little").value||"弟";document.getElementById("names").classList.remove("show");document.getElementById("chapter").classList.add("show");document.getElementById("dialog").innerHTML=l+"「ねえ、"+b+"。あの時計……動いてないよ。」<br><br>"+b+"「ほんとだ。でも……町の灯りはついてる。」"};
+document.getElementById("next").onclick=()=>alert("ここから町を歩ける第1章につなげていくで！");
+show(0);
+</script></body></html>
